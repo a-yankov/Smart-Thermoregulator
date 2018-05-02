@@ -1,41 +1,901 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
+
+
+    <script type="text/javascript">
+        window.onload = showCurrentElement;
+
+        function showCurrentElement() {
+            var selectMode = document.getElementById("operation_mode_select").value;
+            if (selectMode === 'schedule') {
+                var link = document.getElementById('scheduler_table');
+                link.style.visibility = 'visible';
+
+                var link1 = document.getElementById('auto_temp');
+                link1.style.visibility = 'hidden';
+                var link2 = document.getElementById('manual');
+                link2.style.visibility = 'hidden';
+            } else if (selectMode === 'temperature') {
+                var link = document.getElementById('scheduler_table');
+                link.style.visibility = 'hidden';
+
+                var link1 = document.getElementById('auto_temp');
+                link1.style.visibility = 'visible';
+                var link2 = document.getElementById('manual');
+                link2.style.visibility = 'hidden';
+            } else {
+                var link = document.getElementById('scheduler_table');
+                link.style.visibility = 'hidden';
+
+                var link1 = document.getElementById('auto_temp');
+                link1.style.visibility = 'hidden';
+                var link2 = document.getElementById('manual');
+                link2.style.visibility = 'visible';
+            }
+        }
+
+
+    </script>
     <meta charset="UTF-8"/>
     <title>Title</title>
 </head>
 <body>
-    <a href="/previous-data">Previous data</a>
 
-    <p th:text="'Status: ' + ${status}"></p>
-    <p th:text="'Temp: ' + ${temp}"></p>
+<a href="/previous-data">Previous data</a>
+<p th:text="'Status: ' + ${status}"></p>
+<p th:text="'Temp: ' + ${temp}"></p>
 
-    <form method="post">
+<label th:text="'operation mode'">operation mode</label>
+<select name="" id="operation_mode_select" onchange="showCurrentElement()">
+    <option value="schedule">by schedule</option>
+    <option value="temperature">by temperature</option>
+    <option value="manual">manual</option>
+</select>
 
-        <select name="order">
-            <option value="On">On</option>
-            <option value="Auto">Auto</option>
-            <option value="Off">Off</option>
-        </select>
+<form action="/by-temp" method="post" id="auto_temp">
+    <label>Automatic temperature: </label>
+    <select name="temp" th:selected="userTemp">
+        <option value="16">16</option>
+        <option value="17">17</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
+        <option value="21">21</option>
+        <option value="22">22</option>
+        <option value="23">23</option>
+        <option value="24">24</option>
+        <option value="25">25</option>
+        <option value="26">26</option>
+        <option value="27">27</option>
+        <option value="28">28</option>
+    </select>
+    <input type="submit" value="submit"/>
+</form>
 
-        <label>Temperature: </label>
-        <select name="temp">
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-        </select>
+<form action="/by-manual" method="post" id="manual">
+    <label for="manual_label">Manual</label>
+    <select name="manual_select" id="manual_label">
+        <option value="on">On</option>
+        <option value="off">Off</option>
+    </select>
+    <input type="submit" value="submit"/>
+</form>
+<!--<style>-->
+    <!--th, td {-->
+        <!--padding: 15px;-->
+    <!--}-->
+    <!--table#schedule_table tr:nth-child(even) {-->
+        <!--background-color: blanchedalmond;-->
+    <!--table#schedule_table tr:nth-child(odd) {-->
+        <!--background-color: aliceblue;-->
+    <!--}-->
+<!--</style>-->
+<form action="/by-schedule" method="post" id="scheduler_table">
 
-        <input type="submit" value="Submit"/>
-    </form>
+    <table border="1" id="schedule_table">
+        <tr>
+            <th>Monday</th>
+            <th>Wake up:
+                Hour
+
+                <select name="week_scroll">
+                    <option>Select</option>
+                    <option th:each="n : ${#numbers.sequence(1,53)}" th:value="${n}" th:text="${n}" th:selected="${n} == 5"/>
+                </select>
+
+
+                <!--<select name="monday_wake_hour" id="monday_wake_hour" th:selected="${test}">-->
+                    <!--<option value="5">05:00</option>-->
+                    <!--<option value="6">06:00</option>-->
+                    <!--<option value="7">07:00</option>-->
+                    <!--<option value="8">08:00</option>-->
+                <!--</select>-->
+                Temperature
+                <select name="monday_wake_temperature" id="monday_wake_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+            <th>Leave home:
+                Hour
+                <select name="monday_leave_hour" id="monday_leave_hour">
+                    <option value="9">09:00</option>
+                    <option value="10">10:00</option>
+                    <option value="11">11:00</option>
+                    <option value="12">12:00</option>
+                    <option value="13">13:00</option>
+                    <option value="14">14:00</option>
+                    <option value="15">15:00</option>
+                    <option value="16">16:00</option>
+                </select>
+                Temperature
+                <label for="monday_leave_temperature"></label><select name="monday_leave_temperature" id="monday_leave_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Return home:
+                Hour
+                <select name="monday_return_hour" id="monday_return_hour">
+                    <option value="17">17:00</option>
+                    <option value="18">18:00</option>
+                    <option value="19">19:00</option>
+                    <option value="20">20:00</option>
+                    <option value="21">21:00</option>
+                    <option value="22">22:00</option>
+                </select>
+                 Temperature
+                <select name="monday_return_temperature" id="monday_return_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Sleep:
+                Hour
+                <select name="monday_sleep_hour" id="monday_sleep_hour">
+                    <option value="23">23:00</option>
+                    <option value="24">24:00</option>
+                    <option value="01">01:00</option>
+                    <option value="02">02:00</option>
+                    <option value="03">03:00</option>
+                    <option value="04">04:00</option>
+                </select>
+                Temperature
+                <select name="monday_sleep_temperature" id="monday_sleep_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+        </tr>
+        <tr>
+            <th>Tuesday</th>
+            <th>Wake up:
+                Hour
+                <select name="tuesday_wake_hour" id="tuesday_wake_hour">
+                    <option value="5">05:00</option>
+                    <option value="6">06:00</option>
+                    <option value="7">07:00</option>
+                    <option value="8">08:00</option>
+                </select>
+                Temperature
+                <select name="tuesday_wake_temperature" id="tuesday_wake_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+            <th>Leave home:
+                Hour
+                <select name="tuesday_leave_hour" id="tuesday_leave_hour">
+                    <option value="9">09:00</option>
+                    <option value="10">10:00</option>
+                    <option value="11">11:00</option>
+                    <option value="12">12:00</option>
+                    <option value="13">13:00</option>
+                    <option value="14">14:00</option>
+                    <option value="15">15:00</option>
+                    <option value="16">16:00</option>
+                </select>
+                Temperature
+                <select name="tuesday_leave_temperature" id="tuesday_leave_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Return home:
+                Hour
+                <select name="tuesday_return_hour" id="tuesday_return_hour">
+                    <option value="17">17:00</option>
+                    <option value="18">18:00</option>
+                    <option value="19">19:00</option>
+                    <option value="20">20:00</option>
+                    <option value="21">21:00</option>
+                    <option value="22">22:00</option>
+                </select>
+                Temperature
+                <select name="tuesday_return_temperature" id="tuesday_return_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Sleep:
+                Hour
+                <select name="tuesday_sleep_hour" id="tuesday_sleep_hour">
+                    <option value="0">23:00</option>
+                    <option value="0">24:00</option>
+                    <option value="0">01:00</option>
+                    <option value="0">02:00</option>
+                    <option value="0">03:00</option>
+                    <option value="0">04:00</option>
+                </select>
+                Temperature
+                <select name="tuesday_sleep_temperature" id="tuesday_sleep_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+        </tr>
+        <tr>
+            <th>Wednesday</th>
+            <th>Wake up:
+                Hour
+                <select name="wednesday_wake_hour" id="wednesday_wake_hour">
+                    <option value="5">05:00</option>
+                    <option value="6">06:00</option>
+                    <option value="7">07:00</option>
+                    <option value="8">08:00</option>
+                </select>
+                Temperature
+                <select name="wednesday_wake_temperature" id="wednesday_wake_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+            <th>Leave home:
+                Hour
+                <select name="wednesday_leave_hour" id="wednesday_leave_hour">
+                    <option value="9">09:00</option>
+                    <option value="10">10:00</option>
+                    <option value="11">11:00</option>
+                    <option value="12">12:00</option>
+                    <option value="13">13:00</option>
+                    <option value="14">14:00</option>
+                    <option value="15">15:00</option>
+                    <option value="16">16:00</option>
+                </select>
+                Temperature
+                <select name="wednesday_leave_temperature" id="wednesday_leave_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Return home:
+                Hour
+                <select name="wednesday_return_hour" id="wednesdayy_return_hour">
+                    <option value="17">17:00</option>
+                    <option value="18">18:00</option>
+                    <option value="19">19:00</option>
+                    <option value="20">20:00</option>
+                    <option value="21">21:00</option>
+                    <option value="22">22:00</option>
+                </select>
+                Temperature
+                <select name="wednesday_return_temperature" id="wednesday_return_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Sleep:
+                Hour
+                <select name="wednesday_sleep_hour" id="wednesday_sleep_hour">
+                    <option value="0">23:00</option>
+                    <option value="0">24:00</option>
+                    <option value="0">01:00</option>
+                    <option value="0">02:00</option>
+                    <option value="0">03:00</option>
+                    <option value="0">04:00</option>
+                </select>
+                Temperature
+                <select name="wednesday_sleep_temperature" id="wednesday_sleep_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+        </tr>
+        <tr>
+            <th>Thursday</th>
+            <th>Wake up:
+                Hour
+                <select name="thursday_wake_hour" id="thursday_wake_hour">
+                    <option value="5">05:00</option>
+                    <option value="6">06:00</option>
+                    <option value="7">07:00</option>
+                    <option value="8">08:00</option>
+                </select>
+                Temperature
+                <select name="thursday_wake_temperature" id="thursday_wake_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+            <th>Leave home:
+                Hour
+                <select name="thursday_leave_hour" id="thursday_leave_hour">
+                    <option value="9">09:00</option>
+                    <option value="10">10:00</option>
+                    <option value="11">11:00</option>
+                    <option value="12">12:00</option>
+                    <option value="13">13:00</option>
+                    <option value="14">14:00</option>
+                    <option value="15">15:00</option>
+                    <option value="16">16:00</option>
+                </select>
+                Temperature
+                <select name="thursday_leave_temperature" id="thursday_leave_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Return home:
+                Hour
+                <select name="thursday_return_hour" id="thursday_return_hour">
+                    <option value="17">17:00</option>
+                    <option value="18">18:00</option>
+                    <option value="19">19:00</option>
+                    <option value="20">20:00</option>
+                    <option value="21">21:00</option>
+                    <option value="22">22:00</option>
+                </select>
+                Temperature
+                <select name="thursday_return_temperature" id="thursday_return_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Sleep:
+                Hour
+                <select name="thursday_sleep_hour" id="thursday_sleep_hour">
+                    <option value="0">23:00</option>
+                    <option value="0">24:00</option>
+                    <option value="0">01:00</option>
+                    <option value="0">02:00</option>
+                    <option value="0">03:00</option>
+                    <option value="0">04:00</option>
+                </select>
+                Temperature
+                <select name="thursday_sleep_temperature" id="thursday_sleep_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+        </tr>
+        <tr>
+            <th>Friday</th>
+            <th>Wake up:
+                Hour
+                <select name="friday_wake_hour" id="friday_wake_hour">
+                    <option value="5">05:00</option>
+                    <option value="6">06:00</option>
+                    <option value="7">07:00</option>
+                    <option value="8">08:00</option>
+                </select>
+                Temperature
+                <select name="friday_wake_temperature" id="friday_wake_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+            <th>Leave home:
+                Hour
+                <select name="friday_leave_hour" id="friday_leave_hour">
+                    <option value="9">09:00</option>
+                    <option value="10">10:00</option>
+                    <option value="11">11:00</option>
+                    <option value="12">12:00</option>
+                    <option value="13">13:00</option>
+                    <option value="14">14:00</option>
+                    <option value="15">15:00</option>
+                    <option value="16">16:00</option>
+                </select>
+                Temperature
+                <select name="friday_leave_temperature" id="friday_leave_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Return home:
+                Hour
+                <select name="friday_return_hour" id="friday_return_hour">
+                    <option value="17">17:00</option>
+                    <option value="18">18:00</option>
+                    <option value="19">19:00</option>
+                    <option value="20">20:00</option>
+                    <option value="21">21:00</option>
+                    <option value="22">22:00</option>
+                </select>
+                Temperature
+                <select name="friday_return_temperature" id="friday_return_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Sleep:
+                Hour
+                <select name="friday_sleep_hour" id="friday_sleep_hour">
+                    <option value="0">23:00</option>
+                    <option value="0">24:00</option>
+                    <option value="0">01:00</option>
+                    <option value="0">02:00</option>
+                    <option value="0">03:00</option>
+                    <option value="0">04:00</option>
+                </select>
+                Temperature
+                <select name="friday_sleep_temperature" id="friday_sleep_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+        </tr>
+        <tr>
+            <th>Saturday</th>
+            <th>Wake up:
+                Hour
+                <select name="saturday_wake_hour" id="saturday_wake_hour">
+                    <option value="5">05:00</option>
+                    <option value="6">06:00</option>
+                    <option value="7">07:00</option>
+                    <option value="8">08:00</option>
+                </select>
+                Temperature
+                <select name="saturday_wake_temperature" id="saturday_wake_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+            <th>Leave home:
+                Hour
+                <select name="saturday_leave_hour" id="saturday_leave_hour">
+                    <option value="9">09:00</option>
+                    <option value="10">10:00</option>
+                    <option value="11">11:00</option>
+                    <option value="12">12:00</option>
+                    <option value="13">13:00</option>
+                    <option value="14">14:00</option>
+                    <option value="15">15:00</option>
+                    <option value="16">16:00</option>
+                </select>
+                Temperature
+                <select name="saturday_leave_temperature" id="saturday_leave_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Return home:
+                Hour
+                <select name="saturday_return_hour" id="saturday_return_hour">
+                    <option value="17">17:00</option>
+                    <option value="18">18:00</option>
+                    <option value="19">19:00</option>
+                    <option value="20">20:00</option>
+                    <option value="21">21:00</option>
+                    <option value="22">22:00</option>
+                </select>
+                Temperature
+                <select name="saturday_return_temperature" id="saturday_return_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Sleep:
+                Hour
+                <select name="saturday_sleep_hour" id="saturday_sleep_hour">
+                    <option value="0">23:00</option>
+                    <option value="0">24:00</option>
+                    <option value="0">01:00</option>
+                    <option value="0">02:00</option>
+                    <option value="0">03:00</option>
+                    <option value="0">04:00</option>
+                </select>
+                Temperature
+                <select name="saturday_sleep_temperature" id="saturday_sleep_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+        </tr>
+        <tr>
+            <th>Sunday</th>
+            <th>Wake up:
+                Hour
+                <select name="sunday_wake_hour" id="sunday_wake_hour">
+                    <option value="5">05:00</option>
+                    <option value="6">06:00</option>
+                    <option value="7">07:00</option>
+                    <option value="8">08:00</option>
+                </select>
+                Temperature
+                <select name="sunday_wake_temperature" id="sunday_wake_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+            <th>Leave home:
+                Hour
+                <select name="sunday_leave_hour" id="sunday_leave_hour">
+                    <option value="9">09:00</option>
+                    <option value="10">10:00</option>
+                    <option value="11">11:00</option>
+                    <option value="12">12:00</option>
+                    <option value="13">13:00</option>
+                    <option value="14">14:00</option>
+                    <option value="15">15:00</option>
+                    <option value="16">16:00</option>
+                </select>
+                Temperature
+                <select name="sunday_leave_temperature" id="sunday_leave_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Return home:
+                Hour
+                <select name="sunday_return_hour" id="sunday_return_hour">
+                    <option value="17">17:00</option>
+                    <option value="18">18:00</option>
+                    <option value="19">19:00</option>
+                    <option value="20">20:00</option>
+                    <option value="21">21:00</option>
+                    <option value="22">22:00</option>
+                </select>
+                Temperature
+                <select name="sunday_return_temperature" id="sunday_return_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select></th>
+            <th>Sleep:
+                Hour
+                <select name="sunday_sleep_hour" id="sunday_sleep_hour">
+                    <option value="0">23:00</option>
+                    <option value="0">24:00</option>
+                    <option value="0">01:00</option>
+                    <option value="0">02:00</option>
+                    <option value="0">03:00</option>
+                    <option value="0">04:00</option>
+                </select>
+                Temperature
+                <select name="sunday_sleep_temperature" id="sunday_sleep_temperature">
+                    <option value="14">14 &#8451;</option>
+                    <option value="15">15 &#8451;</option>
+                    <option value="16">16 &#8451;</option>
+                    <option value="17">17 &#8451;</option>
+                    <option value="18">18 &#8451;</option>
+                    <option value="19">19 &#8451;</option>
+                    <option value="20">20 &#8451;</option>
+                    <option value="21">21 &#8451;</option>
+                    <option value="22">22 &#8451;</option>
+                    <option value="23">23 &#8451;</option>
+                    <option value="24">24 &#8451;</option>
+                    <option value="25">25 &#8451;</option>
+                    <option value="26">26 &#8451;</option>
+                    <option value="27">27 &#8451;</option>
+                </select>
+            </th>
+        </tr>
+    </table>
+    <input type="submit" value="submit"/>
+</form>
+
+
 </body>
 </html>

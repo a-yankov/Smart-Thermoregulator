@@ -2,11 +2,59 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Title</title>
+    <title>charts</title>
 </head>
 <body>
 
 <p> i am a previous data</p>
 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script th:inline="javascript">
+</script>
+<script type="text/javascript" th:inline="javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    /*<![CDATA[*/
+
+    var data = /*[[${data}]]*/ 'default';
+    console.log(data);
+    /*]]>*/
+
+    function drawChart() {
+        var dataa = new google.visualization.DataTable();
+
+        dataa.addColumn('datetime', 'Date');
+        dataa.addColumn('number', 'Temperature');
+
+
+        for (var prop in data) {
+            var value = data[prop];
+            var temp = value.temperature;
+            var curDate = value.timestamp;
+
+            // Split timestamp into [ Y, M, D, h, m, s ]
+            // 2018-03-26T13:32:51.000Z
+            var t = curDate.split(/[- : "T".]/);
+            var d = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+
+
+            dataa.addRow([d, temp]);
+        }
+
+
+        var options = {
+            title: 'Temperature chart',
+            curveType: 'function',
+            legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(dataa, options);
+    }
+</script>
+
+<div id="curve_chart" style="width: 900px; height: 500px"></div>
 </body>
 </html>
