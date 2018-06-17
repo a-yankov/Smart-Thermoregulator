@@ -68,7 +68,6 @@ public class PiService {
     public void reportCurrentTime() {
         if (operationMode == null){
             this.setOperationMode(settingService.getOneByName("operation_mode").getSettingsValue());
-            System.out.println("operation mode was set on: " + settingService.getOneByName("operation_mode").getSettingsValue());
         }
 
         if (operationMode.equals("temperature") || operationMode.equals("schedule")) {

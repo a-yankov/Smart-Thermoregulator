@@ -21,6 +21,7 @@ public class EnergyEfficientService {
 
 
     public int getWorkingTime(){
+        System.out.println("hellooooooo");
         Iterable<Energy> energySet = this.findAll();
 
         int workTime = 0;
@@ -32,12 +33,16 @@ public class EnergyEfficientService {
     }
 
     public int getWorkingTime(Date fromDate, Date toDate){
-        Iterable<Energy> energySet = this.energyEfficientRepository.findByDateTimeBetween(fromDate, toDate);
-        System.out.println("hello");
+        System.out.println("from " +fromDate);
+        System.out.println("to: " + toDate);
+        Iterable<Energy> energySet = this.energyEfficientRepository.findAllByDateTimeBetween(fromDate, toDate);
+
+
         int workTime = 0;
 
         for (Energy energy : energySet) {
             workTime += energy.getWorkingTimeInSeconds();
+            System.out.println("seconds: " + energy.getWorkingTimeInSeconds());
         }
         return workTime;
     }

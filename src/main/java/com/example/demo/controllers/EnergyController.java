@@ -4,6 +4,7 @@ import com.example.demo.entities.Energy;
 import com.example.demo.entities.Settings;
 import com.example.demo.services.EnergyEfficientService;
 import com.example.demo.services.SettingService;
+import groovy.util.IFileNameFinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -28,20 +29,24 @@ public class EnergyController {
 
     @GetMapping("/energy-efficient")
     public String getEnergyEfficientPage(Model model, @RequestParam(name = "fromDate", required = false) Date fromDate,
-                                         @RequestParam(name = "tiDate", required = false)  Date toDate){
+                                         @RequestParam(name = "toDate", required = false)  Date toDate){
 // @DateTimeFormat(pattern="yyyy-MM-dd")
         int workTime = 0;
-       // if (fromDate != null && toDate != null) {
-           workTime = this.energyEfficientService.getWorkingTime(fromDate, toDate);
-      //  }else{
-      //      workTime = this.energyEfficientService.getWorkingTime();
-      //  }
 
-        System.out.println("workingTime Variable: " + workTime);
+
+
+
+        if ((fromDate != null || !fromDate.equals("")) && (toDate != null || !toDate.equals(""))) {
+
+            workTime = this.energyEfficientService.getWorkingTime(fromDate, toDate);
+        }else{
+           workTime = this.energyEfficientService.getWorkingTime();
+        }
+
 
         Settings powerSettings = settingService.getOneByName("wats");
         Settings priceSettings = settingService.getOneByName("electricity_day_price");
-        System.out.println(powerSettings.getSettingsValue());
+
 
         double kiloWatts = Integer.valueOf(powerSettings.getSettingsValue()) / 1000.0;
         double workTimeInHours = workTime / 60.0 / 60.0;
@@ -50,7 +55,7 @@ public class EnergyController {
 
         Double total =  (kiloWatts * workTimeInHours) * electricityPrice;
 
-        System.out.println(total);
+
         model.addAttribute("consumption", total);
         model.addAttribute("ad", priceSettings.getSettingsValue());
         model.addAttribute("power", powerSettings.getSettingsValue());

@@ -32,10 +32,8 @@ public class HomeController {
     public String getHome(Model model){
         model.addAttribute("operation_mode", piService.getOperationMode());
         model.addAttribute("temp", piService.getTemperature());
-
         model.addAttribute("userTemp", piService.getUserTemp());
         model.addAttribute("operation_mode", this.settingService.getOneByName("operation_mode").getSettingsValue());
-
         String status;
         if (this.piService.pin.isHigh() == true){
             status = "Off";
@@ -43,11 +41,8 @@ public class HomeController {
             status = "On";
         }
         model.addAttribute("status", status);
-
         String[] array = {"schedule", "temperature", "manual"};
         model.addAttribute("op_mode_sequence", array);
-
-
         return "home";
     }
     @GetMapping("/by-temp")
@@ -58,14 +53,10 @@ public class HomeController {
 
     @PostMapping("/by-temp")
     public String byTemperaturePost(@RequestParam("user_selected_temperature") String userSelectedTemperature){
-
-
         String operationModeString = "temperature";
-
         Settings settingMode = this.settingService.getOneByName("operation_mode");
         settingMode.setSettingsValue(operationModeString);
         this.settingService.saveSetting(settingMode);
-
 
         Settings settingUserTemp = this.settingService.getOneByName("user_selected_temp");
         settingUserTemp.setSettingsValue(userSelectedTemperature);
