@@ -1,6 +1,6 @@
 package com.example.demo.services;
 
-import com.example.demo.DataRepository;
+import com.example.demo.repositories.DataRepository;
 import com.example.demo.entities.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

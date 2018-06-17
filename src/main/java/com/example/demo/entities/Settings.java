@@ -14,6 +14,7 @@ public class Settings {
 
     String settingsKey;
     String settingsValue;
+    String settingsType;
 
     public long getId() {
         return id;
@@ -37,5 +38,13 @@ public class Settings {
 
     public void setSettingsValue(String settingsValue) {
         this.settingsValue = settingsValue;
+    }
+
+    public String getSettingsType() {
+        return settingsType;
+    }
+
+    public void setSettingsType(String settingsType) {
+        this.settingsType = settingsType;
     }
 }

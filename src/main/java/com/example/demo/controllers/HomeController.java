@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
 import com.example.demo.PiService;
-
 import com.example.demo.entities.Data;
 import com.example.demo.entities.Settings;
 import com.example.demo.services.DataService;
@@ -13,10 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class HomeController {
@@ -30,38 +26,54 @@ public class HomeController {
     @Autowired
     SettingService settingService;
 
-    String status;
+
 
     @GetMapping("/")
     public String getHome(Model model){
-        List<Settings> settings = this.settingService.getSettings();
-        double temp = piService.getTemperature();
-        model.addAttribute("status", piService.getStatus());
-        model.addAttribute("userTemp", piService.getStatus());
-        model.addAttribute("temp", temp);
-        model.addAttribute("test", settings.get(0));
-        System.out.println(settings.get(0));
+        model.addAttribute("operation_mode", piService.getOperationMode());
+        model.addAttribute("temp", piService.getTemperature());
+
+        model.addAttribute("userTemp", piService.getUserTemp());
+        model.addAttribute("operation_mode", this.settingService.getOneByName("operation_mode").getSettingsValue());
+
+        String status;
+        if (this.piService.pin.isHigh() == true){
+            status = "Off";
+        }else {
+            status = "On";
+        }
+        model.addAttribute("status", status);
+
+        String[] array = {"schedule", "temperature", "manual"};
+        model.addAttribute("op_mode_sequence", array);
+
+
         return "home";
     }
-
-    @PostMapping("/")
-    public String postHome(@RequestParam("temp") int temp){
-        piService.setStatus("Auto");
-        piService.setUserTemp(temp);
-        return "redirect:/";
+    @GetMapping("/by-temp")
+    public String byTemperatureGet(Model model){
+        model.addAttribute("user_selected_temp", this.settingService.getOneByName("user_selected_temp").getSettingsValue());
+        return "temperature";
     }
 
-    @GetMapping("/on")
-    public String postOn(){
-        piService.setStatus("On");
-        piService.useRelay("On");
-        return "redirect:/";
-    }
+    @PostMapping("/by-temp")
+    public String byTemperaturePost(@RequestParam("user_selected_temperature") String userSelectedTemperature){
 
-    @GetMapping("/off")
-    public String postOff(){
-        piService.setStatus("Off");
-        piService.useRelay("Off");
+
+        String operationModeString = "temperature";
+
+        Settings settingMode = this.settingService.getOneByName("operation_mode");
+        settingMode.setSettingsValue(operationModeString);
+        this.settingService.saveSetting(settingMode);
+
+
+        Settings settingUserTemp = this.settingService.getOneByName("user_selected_temp");
+        settingUserTemp.setSettingsValue(userSelectedTemperature);
+        this.settingService.saveSetting(settingUserTemp);
+
+        this.piService.setOperationMode("temperature");
+        this.piService.setUserTemp(Double.parseDouble(userSelectedTemperature));
+
         return "redirect:/";
     }
 
@@ -73,6 +85,20 @@ public class HomeController {
         return "data";
     }
 
+    @GetMapping("/by-schedule")
+    public String byScheduleGet(Model model){
+
+        List<Settings> settings = this.settingService.getSettings();
+        Map<String, String> map = new HashMap<>();
+        for (Settings setting : settings) {
+            map.put(setting.getSettingsKey(), setting.getSettingsValue());
+        }
+
+        model.addAttribute("settings", map);
+
+        return "schedule";
+    }
+
     @PostMapping("/by-schedule")
     public String bySchedulePost(@RequestParam Map<String,String> requestParams){
         List<Settings> settings = this.settingService.getSettings();
@@ -81,17 +107,25 @@ public class HomeController {
               setting.setSettingsValue(value);
         }
         this.settingService.saveSettings(settings);
+        this.piService.setOperationMode("schedule");
         return "redirect:/";
     }
 
-
+    @GetMapping("/by-manual")
+    public String byManualGet(){
+        return "manual";
+    }
 
     @PostMapping("/by-manual")
-    public String byManualPost(@RequestParam() Model model){
-        return "redirect:/";
-    }
-    @PostMapping("/by-temp")
-    public String byTempPost(Model model){
+    public String byManualPost(@RequestParam("operation_mode") String operationMode, @RequestParam("manual_select") String manualSelect){
+
+        Settings settingMode = this.settingService.getOneByName("operation_mode");
+        settingMode.setSettingsValue(operationMode);
+        this.settingService.saveSetting(settingMode);
+
+        this.piService.manual(manualSelect);
+        this.piService.setOperationMode("manual");
+
         return "redirect:/";
     }
 }
