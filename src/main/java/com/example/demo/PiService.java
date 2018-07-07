@@ -1,8 +1,10 @@
 package com.example.demo;
 
+import com.example.demo.entities.Data;
 import com.example.demo.entities.Energy;
 import com.example.demo.entities.Settings;
 import com.example.demo.repositories.EnergyEfficientRepository;
+import com.example.demo.services.DataService;
 import com.example.demo.services.SettingService;
 import com.pi4j.io.gpio.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,8 @@ public class PiService {
     SettingService settingService;
     @Autowired
     EnergyEfficientRepository energyEfficientRepository;
-
+    @Autowired
+    DataService dataService;
 
 
 
@@ -218,6 +221,12 @@ public class PiService {
         }
         DecimalFormat twoDForm = new DecimalFormat("#.#");
         temperature = Double.valueOf(twoDForm.format(currentTemp));
+    }
+    @Scheduled(fixedRate = 1000 * 60)
+    private void addRecortToChart(){
+        Data data = new Data();
+        data.setTemperature(temperature);
+        this.dataService.save(data);
     }
 
 }
