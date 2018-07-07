@@ -336,6 +336,151 @@
     </div>
     <input class="btn btn-primary" type="submit" value="Submit"/>
 </form>
+<form action="/by-schedule" method="post" id="scheduler_table">
+    <div class="form-row align-items-center">
+        <input type="text" value="schedule" name="operation_mode" hidden="hidden"/>
+        <div class="alert alert-light" role="alert">
+            <div class="table-responsive">
+                <table class="table" id="schedule_table">
+                    <tr>
+                        <th>Monday</th>
+                        <th>
+                            From
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                           To
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            <select class="custom-select mr-sm-2" name="manual_select" id="manual_label">
+                                <option value="on">On</option>
+                                <option value="off">Off</option>
+                            </select>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Tuesday</th>
+                        <th>
+                            From
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            To
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            <select class="custom-select mr-sm-2" name="manual_select" id="manual_label">
+                                <option value="on">On</option>
+                                <option value="off">Off</option>
+                            </select>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Wednesday</th>
+                        <th>
+                            From
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            To
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            <select class="custom-select mr-sm-2" name="manual_select" id="manual_label">
+                                <option value="on">On</option>
+                                <option value="off">Off</option>
+                            </select>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Thursday</th>
+                        <th>
+                            From
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            To
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            <select class="custom-select mr-sm-2" name="manual_select" id="manual_label">
+                                <option value="on">On</option>
+                                <option value="off">Off</option>
+                            </select>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Friday</th>
+                        <th>
+                            From
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            To
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            <select class="custom-select mr-sm-2" name="manual_select" id="manual_label">
+                                <option value="on">On</option>
+                                <option value="off">Off</option>
+                            </select>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Saturday</th>
+                        <th>
+                            From
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            To
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            <select class="custom-select mr-sm-2" name="manual_select" id="manual_label">
+                                <option value="on">On</option>
+                                <option value="off">Off</option>
+                            </select>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Sunday</th>
+                        <th>
+                            From
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            To
+                            <select name="monday_sleep_hour" id="monday_sleep_hour">
+                                <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
+                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                            </select>
+                            <select class="custom-select mr-sm-2" name="manual_select" id="manual_label">
+                                <option value="on">On</option>
+                                <option value="off">Off</option>
+                            </select>
+                        </th>
+                    </tr>
+                     </table>
+            </div>
+        </div>
+    </div>
+    <input class="btn btn-primary" type="submit" value="Submit"/>
+</form>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>

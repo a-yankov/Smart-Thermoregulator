@@ -202,7 +202,7 @@ public class PiService {
     //reads temperature from file every one second
     @Scheduled(fixedRate = 1000)
     public void readTemp() {
-        String path = "/sys/bus/w1/devices/28-0015210e2dee/w1_slave";
+        String path = "/sys/bus/w1/devices/10-0008033786c3/w1_slave";
         String line;
         double currentTemp = 0.0;
         try {
