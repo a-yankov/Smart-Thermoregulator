@@ -34,12 +34,12 @@ public class HomeController {
         model.addAttribute("temp", piService.getTemperature());
         model.addAttribute("userTemp", piService.getUserTemp());
         model.addAttribute("operation_mode", this.settingService.getOneByName("operation_mode").getSettingsValue());
-        String status;
-        if (this.piService.pin.isHigh() == true){
-            status = "Off";
-        }else {
-            status = "On";
-        }
+        String status = "off";
+//        if (this.piService.pin.isHigh() == true){
+//            status = "Off";
+//        }else {
+//            status = "On";
+//        }
         model.addAttribute("status", status);
         String[] array = {"schedule", "temperature", "manual"};
         model.addAttribute("op_mode_sequence", array);

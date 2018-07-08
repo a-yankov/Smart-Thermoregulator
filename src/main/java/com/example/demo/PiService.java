@@ -26,8 +26,9 @@ import java.util.Map;
 public class PiService {
 
     //Raspberry pi ports enable
-    private final GpioController gpio = GpioFactory.getInstance();
-    public final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyRelay", PinState.HIGH);
+    //private final GpioController gpio = GpioFactory.getInstance();
+    //public final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyRelay", PinState.HIGH);
+    //public final GpioPinDigitalOutput pinLed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "led", PinState.LOW);
 
     double temperature;
     double userTemp;
@@ -189,21 +190,21 @@ public class PiService {
     {
 
         if (code == 0){
-            pin.high();
+            //pin.high();
             stopTime = System.nanoTime();
             long elapsedTime = stopTime - startTime;
             elapsedTimeInSeconds = (int)(elapsedTime /  1000000000.0);
             energyEfficientRepository.save(new Energy(elapsedTimeInSeconds, new Timestamp(System.currentTimeMillis())));
         }else if (code == 1){
             startTime = System.nanoTime();
-            pin.low();
+            //pin.low();
         }
 
     }
 
 
     //reads temperature from file every one second
-    @Scheduled(fixedRate = 1000)
+    //@Scheduled(fixedRate = 1000)
     public void readTemp() {
         String path = "/sys/bus/w1/devices/10-0008033786c3/w1_slave";
         String line;
@@ -228,5 +229,4 @@ public class PiService {
         data.setTemperature(temperature);
         this.dataService.save(data);
     }
-
 }

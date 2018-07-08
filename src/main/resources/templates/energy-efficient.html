@@ -13,24 +13,39 @@
 </head>
 <body>
 
-<p th:text="'Price: ' + ${consumption}"></p>
+<h1 th:text="'Electricity bill: ' + ${consumption}"></h1>
 
-
+<div class="row">
+    <div class="col">
+        <p>choose period</p>
 <form action="/energy-efficient" method="get">
-    <label for="fromDate">From Date</label>
-    <input type="date" name="fromDate" id="fromDate"/>
-    <label for="toDate"></label>
-    <input type="date" name="toDate" id="toDate"/>
-    <input class="btn btn-primary" type="submit" value="Submit"/>
+    <div class="form-group">
+    <label for="fromDate">From date</label>
+    <input class="form-control" type="date" name="fromDate" id="fromDate"/>
+    </div>
+    <div class="form-group">
+    <label for="toDate">To date</label>
+    <input class="form-control" type="date" name="toDate" id="toDate"/>
+        </div>
+    <input class="btn btn-primary" type="submit" value="choose"/>
 </form>
-
+    </div>
+    <div class="col">
+        <p>Settings</p>
 <form action="/energy-efficient" method="post">
+    <div class="form-group">
     <label for="power">Consumption in watts</label>
-    <input type="text" name="power" id="power" th:value="${power}" required="required"/>
+    <input class="form-control" type="text" name="power" id="power" th:value="${power}" required="required"/>
+    </div>
+        <div class="form-group">
     <label for="price">Price in kWh</label>
-    <input type="text" name="price" id="price" th:value="${price}" required="required"/>
-    <input class="btn btn-primary" type="submit" value="Save"/>
+
+    <input class="form-control" type="text" name="price" id="price" th:value="${price}" required="required"/>
+            </div>
+    <input class="btn btn-primary" type="submit" value="Save settings"/>
 </form>
+    </div>
+</div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

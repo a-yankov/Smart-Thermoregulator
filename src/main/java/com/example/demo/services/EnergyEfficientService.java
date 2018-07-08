@@ -5,7 +5,7 @@ import com.example.demo.repositories.EnergyEfficientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+import java.util.Date;
 
 
 @Service
@@ -21,7 +21,6 @@ public class EnergyEfficientService {
 
 
     public int getWorkingTime(){
-        System.out.println("hellooooooo");
         Iterable<Energy> energySet = this.findAll();
 
         int workTime = 0;

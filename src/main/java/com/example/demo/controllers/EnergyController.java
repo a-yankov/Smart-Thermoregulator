@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.text.DecimalFormat;
+import java.util.Date;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Controller
@@ -28,17 +28,19 @@ public class EnergyController {
     SettingService settingService;
 
     @GetMapping("/energy-efficient")
-    public String getEnergyEfficientPage(Model model, @RequestParam(name = "fromDate", required = false) Date fromDate,
-                                         @RequestParam(name = "toDate", required = false)  Date toDate){
+    public String getEnergyEfficientPage(Model model, @RequestParam(name = "fromDate", required = false )  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<Date> fromDate,
+                                         @RequestParam(name = "toDate", required = false)@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Optional<Date> toDate){
 // @DateTimeFormat(pattern="yyyy-MM-dd")
         int workTime = 0;
 
 
 
-
-        if ((fromDate != null || !fromDate.equals("")) && (toDate != null || !toDate.equals(""))) {
-
-            workTime = this.energyEfficientService.getWorkingTime(fromDate, toDate);
+        if (fromDate != null && toDate != null) {
+            if (fromDate.isPresent() && toDate.isPresent()){
+                workTime = this.energyEfficientService.getWorkingTime(fromDate.get(), toDate.get());
+            }else {
+                workTime = this.energyEfficientService.getWorkingTime();
+            }
         }else{
            workTime = this.energyEfficientService.getWorkingTime();
         }
@@ -54,9 +56,10 @@ public class EnergyController {
 
 
         Double total =  (kiloWatts * workTimeInHours) * electricityPrice;
+        DecimalFormat df = new DecimalFormat("#.##");
 
 
-        model.addAttribute("consumption", total);
+        model.addAttribute("consumption", df.format(total));
         model.addAttribute("ad", priceSettings.getSettingsValue());
         model.addAttribute("power", powerSettings.getSettingsValue());
         model.addAttribute("price", priceSettings.getSettingsValue());
