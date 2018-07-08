@@ -2,8 +2,10 @@ package com.example.demo;
 
 import com.example.demo.entities.Data;
 import com.example.demo.entities.Energy;
+import com.example.demo.entities.SchedulerSettings;
 import com.example.demo.entities.Settings;
 import com.example.demo.repositories.EnergyEfficientRepository;
+import com.example.demo.repositories.SchedulerSettingsRepository;
 import com.example.demo.services.DataService;
 import com.example.demo.services.SettingService;
 import com.pi4j.io.gpio.*;
@@ -18,17 +20,15 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PiService {
 
     //Raspberry pi ports enable
-    //private final GpioController gpio = GpioFactory.getInstance();
-    //public final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyRelay", PinState.HIGH);
-    //public final GpioPinDigitalOutput pinLed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "led", PinState.LOW);
+    private final GpioController gpio = GpioFactory.getInstance();
+    public final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyRelay", PinState.HIGH);
+    public final GpioPinDigitalOutput pinLed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "led", PinState.LOW);
 
     double temperature;
     double userTemp;
@@ -37,14 +37,17 @@ public class PiService {
     long startTime;
     long stopTime;
     int elapsedTimeInSeconds;
+    boolean isSchedulerByTemp;
+    int schedulerTemp;
 
     @Autowired
     SettingService settingService;
     @Autowired
     EnergyEfficientRepository energyEfficientRepository;
     @Autowired
+    SchedulerSettingsRepository schedulerSettingsRepository;
+    @Autowired
     DataService dataService;
-
 
 
     public double getTemperature() {
@@ -70,12 +73,24 @@ public class PiService {
 
     @Scheduled(fixedRate = 500)
     public void reportCurrentTime() {
-        if (operationMode == null){
+        if (operationMode == null) {
             this.setOperationMode(settingService.getOneByName("operation_mode").getSettingsValue());
         }
-
-        if (operationMode.equals("temperature") || operationMode.equals("schedule")) {
+        if (operationMode.equals("temperature")) {
             if (temperature < userTemp) {
+                controlRelay(1);
+                isSchedulerByTemp = false;
+            } else {
+                controlRelay(0);
+                isSchedulerByTemp = false;
+            }
+        }
+    }
+
+    @Scheduled(fixedRate = 1000)
+    public void SchedulerByTempMethod() {
+        if (isSchedulerByTemp) {
+            if (temperature < schedulerTemp) {
                 controlRelay(1);
             } else {
                 controlRelay(0);
@@ -83,13 +98,48 @@ public class PiService {
         }
     }
 
+
     public void manual(String status) {
         if (status.equals("on")) {
             controlRelay(1);
+            isSchedulerByTemp = false;
         } else if (status.equals("off")) {
             controlRelay(0);
+            isSchedulerByTemp = false;
         }
     }
+
+    @Scheduled(fixedRate = 1000 * 60)
+    public void scheduled() {
+        if (operationMode == null) {
+            this.setOperationMode(settingService.getOneByName("operation_mode").getSettingsValue());
+        }
+        Calendar calendar = Calendar.getInstance();
+
+        if (operationMode.equals("schedule")) {
+            List<SchedulerSettings> list = (List<SchedulerSettings>) this.schedulerSettingsRepository.findAll();
+            for (SchedulerSettings schedulerSettings : list) {
+                if (schedulerSettings.getDay() == calendar.DAY_OF_WEEK) {
+                    if (schedulerSettings.getTime().getHours() == calendar.getTime().getHours()) {
+                        if (schedulerSettings.getTime().getMinutes() == calendar.getTime().getMinutes()) {
+                            if (schedulerSettings.getMode().equals("On")) {
+                                controlRelay(1);
+                                isSchedulerByTemp = false;
+                            } else if (schedulerSettings.getMode().equals("Off")) {
+                                controlRelay(0);
+                                isSchedulerByTemp = false;
+                            } else if (schedulerSettings.getMode().equals("Temp")) {
+                                isSchedulerByTemp = true;
+                                schedulerTemp = schedulerSettings.getTemp();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
 
     @Scheduled(fixedRate = 1000 * 60 * 60)
     private void updateStatus() {
@@ -186,25 +236,25 @@ public class PiService {
         }
     }
 
-    private void controlRelay(int code)
-    {
-
-        if (code == 0){
-            //pin.high();
+    private void controlRelay(int code) {
+        if (code == 0) {
+            pin.high();
             stopTime = System.nanoTime();
             long elapsedTime = stopTime - startTime;
-            elapsedTimeInSeconds = (int)(elapsedTime /  1000000000.0);
+            elapsedTimeInSeconds = (int) (elapsedTime / 1000000000.0);
             energyEfficientRepository.save(new Energy(elapsedTimeInSeconds, new Timestamp(System.currentTimeMillis())));
-        }else if (code == 1){
+            elapsedTimeInSeconds = 0;
+        } else if (code == 1) {
+            System.out.println("On");
             startTime = System.nanoTime();
-            //pin.low();
+            pin.low();
+            System.out.println("test");
         }
-
     }
 
 
     //reads temperature from file every one second
-    //@Scheduled(fixedRate = 1000)
+
     public void readTemp() {
         String path = "/sys/bus/w1/devices/10-0008033786c3/w1_slave";
         String line;
@@ -223,8 +273,19 @@ public class PiService {
         DecimalFormat twoDForm = new DecimalFormat("#.#");
         temperature = Double.valueOf(twoDForm.format(currentTemp));
     }
+
+    @Scheduled(fixedRate = 1000)
+    public void ledVsTemp() {
+        if (pinLed.isLow()) {
+            readTemp();
+            pinLed.high();
+        } else {
+            pinLed.low();
+        }
+    }
+
     @Scheduled(fixedRate = 1000 * 60)
-    private void addRecortToChart(){
+    private void addRecortToChart() {
         Data data = new Data();
         data.setTemperature(temperature);
         this.dataService.save(data);

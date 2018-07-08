@@ -16,7 +16,7 @@
     <a class="nav-link" href="/by-temp">Temperature</a>
     <a class="nav-link" href="/by-schedule">Schedule</a>
     <a class="nav-link" href="/previous-data">Chart</a>
-    <a class="nav-link" href="#">Energy efficient</a>
+    <a class="nav-link" href="/energy-efficient">Energy efficient</a>
 </nav>
 
 <form action="/by-schedule" method="post" id="scheduler_table">
@@ -336,19 +336,19 @@
     </div>
     <input class="btn btn-primary" type="submit" value="Submit"/>
 </form>
-<form action="/by-schedule" method="post" id="scheduler_table">
+<form action="/by-schedule" method="post">
     <div class="form-row align-items-center">
         <input type="text" value="schedule" name="operation_mode" hidden="hidden"/>
         <div class="alert alert-light" role="alert">
             <div class="table-responsive">
-                <table class="table" id="schedule_table">
+                <table class="table">
                     <tr>
                         <th>Monday</th>
                         <th>
                             From
                             <select name="monday_sleep_hour" id="monday_sleep_hour">
                                 <!--<option th:each="n : ${#numbers.sequence(23,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>-->
-                                <option th:each="n : ${#numbers.sequence(1,24) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
+                                <option th:each="n : ${#numbers.sequence(0,23) }" th:value="${n}" th:text="${n + ':00'}" th:selected="${n} == ${settings.get('monday_sleep_hour')}"/>
                             </select>
                            To
                             <select name="monday_sleep_hour" id="monday_sleep_hour">
