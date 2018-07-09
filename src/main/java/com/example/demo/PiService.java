@@ -119,10 +119,13 @@ public class PiService {
         if (operationMode.equals("schedule")) {
             List<SchedulerSettings> list = (List<SchedulerSettings>) this.schedulerSettingsRepository.findAll();
             for (SchedulerSettings schedulerSettings : list) {
-                if (schedulerSettings.getDay() == calendar.DAY_OF_WEEK) {
+                System.out.println("settings day: " + schedulerSettings.getDay());
+                System.out.println("settings day: " + calendar.getTime().getDay());
+                if (schedulerSettings.getDay() == calendar.getTime().getDay()) {
                     if (schedulerSettings.getTime().getHours() == calendar.getTime().getHours()) {
                         if (schedulerSettings.getTime().getMinutes() == calendar.getTime().getMinutes()) {
                             if (schedulerSettings.getMode().equals("On")) {
+                                System.out.println("");
                                 controlRelay(1);
                                 isSchedulerByTemp = false;
                             } else if (schedulerSettings.getMode().equals("Off")) {
@@ -238,17 +241,19 @@ public class PiService {
 
     private void controlRelay(int code) {
         if (code == 0) {
-            pin.high();
-            stopTime = System.nanoTime();
-            long elapsedTime = stopTime - startTime;
-            elapsedTimeInSeconds = (int) (elapsedTime / 1000000000.0);
-            energyEfficientRepository.save(new Energy(elapsedTimeInSeconds, new Timestamp(System.currentTimeMillis())));
-            elapsedTimeInSeconds = 0;
+            if (pin.isLow()) {
+                pin.high();
+                stopTime = System.nanoTime();
+                long elapsedTime = stopTime - startTime;
+                elapsedTimeInSeconds = (int) (elapsedTime / 1000000000.0);
+                energyEfficientRepository.save(new Energy(elapsedTimeInSeconds, new Timestamp(System.currentTimeMillis())));
+
+            }
         } else if (code == 1) {
-            System.out.println("On");
-            startTime = System.nanoTime();
-            pin.low();
-            System.out.println("test");
+            if (pin.isHigh()) {
+                startTime = System.nanoTime();
+                pin.low();
+            }
         }
     }
 
